@@ -27,7 +27,7 @@ using QuantConnect.DataSource;
 namespace QuantConnect.DataLibrary.Tests
 {
     [TestFixture]
-    public class MyCustomDataTypeTests
+    public class VIXCentralContangoTests
     {
         [Test]
         public void JsonRoundTrip()
@@ -87,12 +87,30 @@ namespace QuantConnect.DataLibrary.Tests
 
         private BaseData CreateNewInstance()
         {
-            return new MyCustomDataType
+            return new VIXCentralContango
             {
                 Symbol = Symbol.Empty,
                 Time = DateTime.Today,
                 DataType = MarketDataType.Base,
-                SomeCustomProperty = "This is some market related information"
+		Period = TimeSpan.FromDays(1),
+
+		FrontMonth = 1,
+		F1 = 0.1m,
+		F2 = 0.2m,
+		F3 = 0.3m,
+		F4 = 0.4m,
+		F5 = 0.5m,
+		F6 = 0.6m,
+		F7 = 0.7m,
+		F8 = 0.8m,
+		F9 = null,
+		F10 = null,
+		F11 = 0.11m,
+		F12 = 0.12m,
+
+                Contango_F2_Minus_F1 = 0.5m,
+                Contango_F7_Minus_F4 = 0.4m,
+                Contango_F7_Minus_F4_Div_3 = 0.1m
             };
         }
     }
