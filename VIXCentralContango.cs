@@ -28,6 +28,11 @@ namespace QuantConnect.DataSource
     public class VIXCentralContango : BaseData
     {
         /// <summary>
+        /// Data source ID
+        /// </summary>
+        public static int DataSourceId { get; } = 2005;
+
+        /// <summary>
         /// The month of the front month contract (possible values: 1 - 12)
         /// </summary>
         public int FrontMonth { get; set; }
