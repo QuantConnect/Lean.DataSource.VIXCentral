@@ -110,7 +110,7 @@ namespace QuantConnect.DataLibrary.Tests
                 };
             }
 
-            var expectedSymbol = Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 1, 19));
+            var expectedSymbol = Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 1, 19));
             var expectedDates = new List<DateTime>
             {
                 new DateTime(2021, 4, 26),
@@ -155,18 +155,17 @@ namespace QuantConnect.DataLibrary.Tests
                 true,
                 false);
 
-            // Using Market.CBOE instead of CFE doesn't matter here, we just need a placeholder future Symbol
             var symbols = new List<Symbol>
             {
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 1, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 2, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 3, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 4, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 5, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 6, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 7, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 8, 19)),
-                Symbol.CreateFuture("VX", Market.CBOE, new DateTime(2022, 9, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 1, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 2, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 3, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 4, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 5, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 6, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 7, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 8, 19)),
+                Symbol.CreateFuture("VX", Market.CFE, new DateTime(2022, 9, 19)),
             };
             
             var lines = new List<string>
@@ -270,10 +269,7 @@ namespace QuantConnect.DataLibrary.Tests
 
             protected override string GetFutureMarket(string ticker)
             {
-                // returning Market.CBOE doesn't matter here, we just need an example
-                // future to work with (and we don't have the data folder easily accessible
-                // from this repo).
-                return Market.CBOE;
+                return Market.CFE;
             }
 
             protected override string DownloadCBOESettlementData(HttpClient client, string url)
