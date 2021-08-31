@@ -39,7 +39,6 @@ namespace QuantConnect.DataProcessing
                 : DateTime.UtcNow.Date;
 
             var processor = new VIXContangoProcessor(
-                deploymentDate.AddMonths(-2),
                 tempOutputDirectory,
                 processedDataFolder,
                 deploymentDate,

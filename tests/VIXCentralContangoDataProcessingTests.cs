@@ -34,7 +34,6 @@ namespace QuantConnect.DataLibrary.Tests
         {
             var now = DateTime.UtcNow.Date;
             var processor = new TestingVIXContangoProcessor(
-                now,
                 null,
                 null,
                 now,
@@ -44,8 +43,10 @@ namespace QuantConnect.DataLibrary.Tests
 
             var chain = processor.GetFutureChain();
             
-            Assert.AreEqual(12, chain.Count);
-            Assert.IsTrue(chain.All(x => x.ID.Date >= now));
+            // 12 contracts from today's front month contract + 2 of warmup contracts
+            Assert.AreEqual(14, chain.Count);
+            Assert.IsTrue(chain.Skip(2).All(x => x.ID.Date >= now));
+            Assert.IsFalse(chain.All(x => x.ID.Date >= now));
         }
 
         [Test]
@@ -53,7 +54,6 @@ namespace QuantConnect.DataLibrary.Tests
         {
             var startDate = DateTime.UtcNow.Date.AddMonths(-3);
             var processor = new TestingVIXContangoProcessor(
-                startDate,
                 null,
                 null,
                 startDate,
@@ -77,7 +77,6 @@ namespace QuantConnect.DataLibrary.Tests
         {
             var now = DateTime.UtcNow.Date;
             var processor = new TestingVIXContangoProcessor(
-                now,
                 null,
                 null,
                 now,
@@ -149,7 +148,6 @@ namespace QuantConnect.DataLibrary.Tests
         {
             var now = DateTime.UtcNow.Date;
             var processor = new TestingVIXContangoProcessor(
-                now,
                 null,
                 null,
                 now,
@@ -260,14 +258,13 @@ namespace QuantConnect.DataLibrary.Tests
             public int RetriesBeforeSuccess { get; set; }
             
             public TestingVIXContangoProcessor(
-                DateTime startDate,
                 DirectoryInfo baseOutputDirectory,
                 DirectoryInfo existingDataDirectory,
                 DateTime deploymentDate,
                 string outputVendorDirectoryName,
                 bool overwriteExistingData,
                 bool processOnlyDeploymentDateData) 
-                : base(startDate, baseOutputDirectory, existingDataDirectory, deploymentDate, outputVendorDirectoryName, overwriteExistingData, processOnlyDeploymentDateData)
+                : base(baseOutputDirectory, existingDataDirectory, deploymentDate, outputVendorDirectoryName, overwriteExistingData, processOnlyDeploymentDateData)
             {
             }
 

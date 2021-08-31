@@ -60,7 +60,6 @@ namespace QuantConnect.DataProcessing
         /// date's data with be considered for inclusion into the data set.
         /// </param>
         public VIXContangoProcessor(
-            DateTime startDate,
             DirectoryInfo baseOutputDirectory,
             DirectoryInfo existingDataDirectory,
             DateTime deploymentDate,
@@ -68,13 +67,35 @@ namespace QuantConnect.DataProcessing
             bool overwriteExistingData,
             bool processOnlyDeploymentDateData)
         {
+            // To prevent ourselves from generating incorrect data, we need to load
+            // data for contract months that came before the current front month contract.
+            //
+            // This is an example scenario that would corrupt the data if no contracts
+            // before the current front month contract were downloaded/included:
+            //
+            // (futures contract month code reference: https://www.cmegroup.com/month-codes.html)
+            //
+            // * Processing/current date is 2021-02-20
+            // * VXG1 expired on 2021-02-10
+            // * Get settlement price data for VX chain (minimum 12 contracts because the Lean data source object has settlement prices for the first 12 contracts in the chain, so we need to make sure all data is considered)
+            // * VXH1 settlement price data starts on 2020-05-01, same with other contracts
+            // * Settlement data begins at 2020-05-01, so we start adding those data into a collection
+            // * Fast-forward settlement data processing from 2020-05-01 to 2021-02-05
+            // * On 2021-02-05, we think that VXH1 is the front month contract because we only downloaded data for VXH1 and after
+            // * VXG1 is the actual front month contract
+            // * We would write:        VXH1 settlement price data to contango.F1, VXJ1 to contango.F2, etc.
+            // * It should actually be: VXG1 settlement price data to contango.F1, VXH1 to contango.F2, VXJ1 to contango.F3, etc.
+            //
+            // So on a date like 2021-02-05, we think that VXH1 is the front-month contract, when in fact it should be VXG1 if we don't download data from before, so it ends up corrupting the data/producing bad results.
+            // We subtract two months from the current deployment date as a safe bet to ensure that there is sufficient room for warmup.
+            _startDate = deploymentDate.AddMonths(-2);
+            _deploymentDate = deploymentDate;
+
             _utcDate = DateTime.UtcNow.Date;
-            _startDate = startDate;
             _rateGate = new RateGate(1, TimeSpan.FromSeconds(5));
 
             _tempOutputDirectory = baseOutputDirectory;
             _existingDataDirectory = existingDataDirectory;
-            _deploymentDate = deploymentDate;
             _outputVendorDirectoryName = outputVendorDirectoryName;
             _overwriteExistingData = overwriteExistingData;
             _processOnlyDeploymentDateData = processOnlyDeploymentDateData;
