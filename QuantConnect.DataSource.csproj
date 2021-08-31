@@ -5,6 +5,8 @@
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
     <AssemblyName>QuantConnect.DataSource.VIXCentralContango</AssemblyName>
     <OutputPath>bin\$(Configuration)</OutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.VIXCentralContango.xml</DocumentationFile>
   </PropertyGroup>
 
