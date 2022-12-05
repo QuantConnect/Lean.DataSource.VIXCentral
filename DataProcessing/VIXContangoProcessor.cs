@@ -31,7 +31,7 @@ namespace QuantConnect.DataProcessing
 {
     public class VIXContangoProcessor
     {
-        private const string _futuresBaseUrl = "https://www.cboe.com/us/futures/market_statistics/historical_data/products/csv/";
+        private const string _futuresBaseUrl = "https://cdn.cboe.com/data/us/futures/market_statistics/historical_data";
         private const string _userAgent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0";
         private const string _csvHeader = "Date,First Month,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,Contango 2/1,Contango 7/4,Con 7/4 div 3";
 
@@ -212,7 +212,8 @@ namespace QuantConnect.DataProcessing
             
             foreach (var symbol in symbols)
             {
-                var url = $"{_futuresBaseUrl}/{symbol.ID.Symbol.ToUpperInvariant()}/{symbol.ID.Date.Date:yyyy-MM-dd}/";
+                var ticker = symbol.ID.Symbol.ToUpperInvariant();
+                var url = $"{_futuresBaseUrl}/{ticker}/{ticker}_{symbol.ID.Date.Date:yyyy-MM-dd}.csv";
                 
                 string result = null;
                 for (var retry = 1; retry <= 5; retry++)
