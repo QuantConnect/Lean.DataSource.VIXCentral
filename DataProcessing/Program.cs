@@ -26,8 +26,6 @@ namespace QuantConnect.DataProcessing
     {
         public static void Main(string[] args)
         {
-            Config.Set("data-folder", "C:\\Users\\Alex\\Lean\\Data");
-
             var tempOutputDirectory =
                 Directory.CreateDirectory(Config.Get("temp-output-directory", "/temp-output-directory"));
             var processedDataFolder =
@@ -42,9 +40,15 @@ namespace QuantConnect.DataProcessing
                 ? Parse.DateTimeExact(deploymentDateValue, "yyyyMMdd", DateTimeStyles.None)
                 : DateTime.UtcNow.Date;
 
+            var processStartDateValue = Config.Get("process-start-date", null);
+            var processStartDate = processStartDateValue != null
+                ? Parse.DateTimeExact(processStartDateValue, "yyyyMMdd", DateTimeStyles.None)
+                : deploymentDate.AddMonths(-2);
+
             var processor = new VIXContangoProcessor(
                 tempOutputDirectory,
                 processedDataFolder,
+                processStartDate,
                 deploymentDate,
                 outputVendorDirectory,
                 overwriteExistingEntries,

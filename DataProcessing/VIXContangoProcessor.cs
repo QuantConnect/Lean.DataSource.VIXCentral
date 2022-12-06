@@ -52,6 +52,7 @@ namespace QuantConnect.DataProcessing
         /// <param name="startDate">Starting date to process data from</param>
         /// <param name="baseOutputDirectory">Base output directory, e.g. /temp-output-directory</param>
         /// <param name="existingDataDirectory">Existing data directory, e.g. /Data</param>
+        /// <param name="processStartDate">The date of the first data we'll get</param>
         /// <param name="deploymentDate">The date that we're processing data for</param>
         /// <param name="outputVendorDirectoryName">Vendor directory name to write to inside the `{{baseOutputDirectory}}/alternative/` directory</param>
         /// <param name="overwriteExistingData">If true, we overwrite existing data with newly generated data</param>
@@ -62,6 +63,7 @@ namespace QuantConnect.DataProcessing
         public VIXContangoProcessor(
             DirectoryInfo baseOutputDirectory,
             DirectoryInfo existingDataDirectory,
+            DateTime processStartDate,
             DateTime deploymentDate,
             string outputVendorDirectoryName,
             bool overwriteExistingData,
@@ -88,7 +90,7 @@ namespace QuantConnect.DataProcessing
             //
             // So on a date like 2021-02-05, we think that VXH1 is the front-month contract, when in fact it should be VXG1 if we don't download data from before, so it ends up corrupting the data/producing bad results.
             // We subtract two months from the current deployment date as a safe bet to ensure that there is sufficient room for warmup.
-            _startDate = deploymentDate.AddMonths(-2);
+            _startDate = processStartDate;
             _deploymentDate = deploymentDate;
 
             _utcDate = DateTime.UtcNow.Date;
@@ -239,14 +241,15 @@ namespace QuantConnect.DataProcessing
 
                         if (retry == 5)
                         {
-                            throw new Exception("Max retries exceeded (5/5)");
+                            Log.Error($"Max retries exceeded (5/5) - {url}");
                         }
                     }
                 }
 
                 if (result == null)
                 {
-                    throw new Exception($"Result returned is null for Symbol: {symbol}");
+                    Log.Error($"Result returned is null for Symbol and date: {ticker}, {symbol.ID.Date.Date:yyyy-MM-dd}");
+                    continue;
                 }
 
                 // Just in case, remove \r characters before we split for line breaks
@@ -381,8 +384,12 @@ namespace QuantConnect.DataProcessing
                     : null;
 
                 // Contango calculations, as applied by VIXCentral
-                contango.Contango_F2_Minus_F1 = (contango.F2 - contango.F1) / contango.F1;
-                contango.Contango_F7_Minus_F4 = (contango.F7 - contango.F4) / contango.F4;
+                contango.Contango_F2_Minus_F1 = contango.F1 != 0
+                    ? (contango.F2 - contango.F1) / contango.F1
+                    : 0;
+                contango.Contango_F7_Minus_F4 = contango.F4 != 0
+                    ? (contango.F7 - contango.F4) / contango.F4
+                    : 0;
                 contango.Contango_F7_Minus_F4_Div_3 = contango.Contango_F7_Minus_F4 / 3m;
                 contango.Time = date;
                 
