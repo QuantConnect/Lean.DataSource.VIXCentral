@@ -43,10 +43,9 @@ namespace QuantConnect.DataLibrary.Tests
 
             var chain = processor.GetFutureChain();
             
-            // 12 contracts from today's front month contract + 2 of warmup contracts
-            Assert.AreEqual(14, chain.Count);
-            Assert.IsTrue(chain.Skip(2).All(x => x.ID.Date >= now));
-            Assert.IsFalse(chain.All(x => x.ID.Date >= now));
+            // 12 contracts from today's front month contract
+            Assert.AreEqual(12, chain.Count);
+            Assert.IsTrue(chain.All(x => x.ID.Date >= now));
         }
 
         [Test]
@@ -131,11 +130,18 @@ namespace QuantConnect.DataLibrary.Tests
             }
             if (!successExpected)
             {
+                if (!invalidData)
+                {
+                    var expected = processor.DownloadFuturesSettlement(symbols);
+                    Assert.IsEmpty(expected);
+                    return;
+                }
                 Assert.Throws<Exception>(() => processor.DownloadFuturesSettlement(symbols));
                 return;
             }
 
             var settlement = processor.DownloadFuturesSettlement(symbols);
+
             Assert.AreEqual(expectedDates, settlement.Keys.OrderBy(x => x).ToList());
             for (var i = 0; i < lines.Count; i++)
             {
