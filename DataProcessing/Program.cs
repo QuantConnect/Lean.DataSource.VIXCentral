@@ -17,8 +17,6 @@ using QuantConnect.Configuration;
 using System;
 using System.Globalization;
 using System.IO;
-using ICSharpCode.SharpZipLib.Zip;
-using QuantConnect.Data.Fundamental;
 
 namespace QuantConnect.DataProcessing
 {
