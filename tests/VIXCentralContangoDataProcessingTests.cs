@@ -263,7 +263,7 @@ namespace QuantConnect.DataLibrary.Tests
                 string outputVendorDirectoryName,
                 bool overwriteExistingData,
                 bool processOnlyDeploymentDateData) 
-                : base(baseOutputDirectory, existingDataDirectory, deploymentDate, outputVendorDirectoryName, overwriteExistingData, processOnlyDeploymentDateData)
+                : base(baseOutputDirectory, existingDataDirectory, deploymentDate, deploymentDate, outputVendorDirectoryName, overwriteExistingData, processOnlyDeploymentDateData)
             {
             }
 
