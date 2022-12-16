@@ -40,7 +40,7 @@ namespace QuantConnect.DataProcessing
             var processStartDateValue = Config.Get("process-start-date", null);
             var processStartDate = processStartDateValue != null
                 ? Parse.DateTimeExact(processStartDateValue, "yyyyMMdd", DateTimeStyles.None)
-                : deploymentDate.AddDays(7);
+                : deploymentDate.AddDays(-1);
 
             var processor = new VIXContangoProcessor(
                 tempOutputDirectory,
