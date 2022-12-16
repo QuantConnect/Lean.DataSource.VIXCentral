@@ -31,7 +31,6 @@ namespace QuantConnect.DataProcessing
 
             var overwriteExistingEntries = Config.GetBool("overwrite-existing-entries");
             var outputVendorDirectory = Config.Get("output-vendor-directory", "vixcentral");
-            var processOnlyDeploymentDateData = Config.GetBool("process-only-deployment-date-data", true);
 
             var deploymentDateValue = Environment.GetEnvironmentVariable("QC_DATAFLEET_DEPLOYMENT_DATE");
             var deploymentDate = deploymentDateValue != null
@@ -41,7 +40,7 @@ namespace QuantConnect.DataProcessing
             var processStartDateValue = Config.Get("process-start-date", null);
             var processStartDate = processStartDateValue != null
                 ? Parse.DateTimeExact(processStartDateValue, "yyyyMMdd", DateTimeStyles.None)
-                : deploymentDate.AddMonths(-2);
+                : deploymentDate.AddDays(7);
 
             var processor = new VIXContangoProcessor(
                 tempOutputDirectory,
@@ -49,8 +48,7 @@ namespace QuantConnect.DataProcessing
                 processStartDate,
                 deploymentDate,
                 outputVendorDirectory,
-                overwriteExistingEntries,
-                processOnlyDeploymentDateData);
+                overwriteExistingEntries);
 
             processor.Process();
         }

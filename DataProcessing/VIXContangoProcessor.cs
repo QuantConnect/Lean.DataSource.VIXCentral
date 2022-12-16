@@ -44,30 +44,23 @@ namespace QuantConnect.DataProcessing
         private readonly DateTime _deploymentDate;
         private readonly string _outputVendorDirectoryName;
         private readonly bool _overwriteExistingData;
-        private readonly bool _processOnlyDeploymentDateData;
         
         /// <summary>
         /// Creates a new instance of the VIX contango processor
         /// </summary>
-        /// <param name="startDate">Starting date to process data from</param>
         /// <param name="baseOutputDirectory">Base output directory, e.g. /temp-output-directory</param>
         /// <param name="existingDataDirectory">Existing data directory, e.g. /Data</param>
         /// <param name="processStartDate">The date of the first data we'll get</param>
         /// <param name="deploymentDate">The date that we're processing data for</param>
         /// <param name="outputVendorDirectoryName">Vendor directory name to write to inside the `{{baseOutputDirectory}}/alternative/` directory</param>
         /// <param name="overwriteExistingData">If true, we overwrite existing data with newly generated data</param>
-        /// <param name="processOnlyDeploymentDateData">
-        /// If true, will consider all data with any date for inclusion. Otherwise, only the processing
-        /// date's data with be considered for inclusion into the data set.
-        /// </param>
         public VIXContangoProcessor(
             DirectoryInfo baseOutputDirectory,
             DirectoryInfo existingDataDirectory,
             DateTime processStartDate,
             DateTime deploymentDate,
             string outputVendorDirectoryName,
-            bool overwriteExistingData,
-            bool processOnlyDeploymentDateData)
+            bool overwriteExistingData)
         {
             // To prevent ourselves from generating incorrect data, we need to load
             // data for contract months that came before the current front month contract.
@@ -100,7 +93,6 @@ namespace QuantConnect.DataProcessing
             _existingDataDirectory = existingDataDirectory;
             _outputVendorDirectoryName = outputVendorDirectoryName;
             _overwriteExistingData = overwriteExistingData;
-            _processOnlyDeploymentDateData = processOnlyDeploymentDateData;
         }
 
         /// <summary>
@@ -457,15 +449,6 @@ namespace QuantConnect.DataProcessing
                 {
                     // Data already exists for this day, and this function is
                     // configured to only append/add missing data, so we skip.
-                    continue;
-                }
-                if (_processOnlyDeploymentDateData && contango.Time.Date != _deploymentDate)
-                {
-                    // The time of the data does not match up with the deployment date, and
-                    // since we want to only add data for the deployment date, then we'll
-                    // skip and leave everything else as-is, only updating a single data
-                    // point if there's new data and we're either adding new data or 
-                    // have configured this to overwrite any existing data.
                     continue;
                 }
                 

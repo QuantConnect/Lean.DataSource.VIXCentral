@@ -38,7 +38,6 @@ namespace QuantConnect.DataLibrary.Tests
                 null,
                 now,
                 "contango",
-                false,
                 false);
 
             var chain = processor.GetFutureChain();
@@ -57,7 +56,6 @@ namespace QuantConnect.DataLibrary.Tests
                 null,
                 startDate,
                 "contango",
-                false,
                 false);
 
             var chain = processor.GetFutureChain();
@@ -80,7 +78,6 @@ namespace QuantConnect.DataLibrary.Tests
                 null,
                 now,
                 "contango",
-                false,
                 false);
 
 
@@ -158,8 +155,7 @@ namespace QuantConnect.DataLibrary.Tests
                 null,
                 now,
                 "contango",
-                true,
-                false);
+                true);
 
             var symbols = new List<Symbol>
             {
@@ -267,9 +263,8 @@ namespace QuantConnect.DataLibrary.Tests
                 DirectoryInfo existingDataDirectory,
                 DateTime deploymentDate,
                 string outputVendorDirectoryName,
-                bool overwriteExistingData,
-                bool processOnlyDeploymentDateData) 
-                : base(baseOutputDirectory, existingDataDirectory, deploymentDate, deploymentDate, outputVendorDirectoryName, overwriteExistingData, processOnlyDeploymentDateData)
+                bool overwriteExistingData) 
+                : base(baseOutputDirectory, existingDataDirectory, deploymentDate, deploymentDate, outputVendorDirectoryName, overwriteExistingData)
             {
             }
 
