@@ -26,7 +26,7 @@ using QuantConnect.DataSource;
 
 namespace QuantConnect.DataLibrary.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("TravisExclude")]
     public class VIXCentralContangoDataProcessingTests
     {
         [Test]
